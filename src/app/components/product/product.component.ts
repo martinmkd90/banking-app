@@ -15,7 +15,12 @@ export class ProductComponent implements OnInit {
   errorMessage: string | null = null;
   productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
+    description: [''],
+    interestRate: [''],
+    duration: [''],
+    minBalance: ['']
   });
+  isFormVisible: boolean = false;
 
   constructor(private productService: ProductService, private fb: FormBuilder) { }
 
@@ -28,14 +33,17 @@ export class ProductComponent implements OnInit {
 
   onSubmit(): void {
     const productData = this.productForm.value;
-    this.productService.addProduct(productData).subscribe(
-      response => {
-        // Handle success
+    this.productService.addProduct(productData).subscribe({
+      next: response => {
+        this.successMessage = "Product added successfully!";
+        this.errorMessage = null;
+        this.loadProducts();
       },
-      error => {
-        // Handle error
+      error: error => {
+        this.errorMessage = "Failed to add product. Please try again.";
+        this.successMessage = null;
       }
-    );
+    });
   }  
 
   loadProducts(): void {
@@ -56,18 +64,30 @@ export class ProductComponent implements OnInit {
 
   updateProduct(): void {
     this.productService.updateProduct(this.product).subscribe(() => {
-      this.loadProducts();
-    });
-  }
-
-  deleteProduct(id: number): void {
-    this.productService.deleteProduct(id).subscribe(() => {
+      this.successMessage = "Product updated successfully!";
+      this.errorMessage = null;
       this.loadProducts();
     },
     error => {
-      // Handle error
-    }
-  );
+      this.errorMessage = "Failed to update product. Please try again.";
+      this.successMessage = null;
+    });
+  }  
+
+  deleteProduct(id: number): void {
+    this.productService.deleteProduct(id).subscribe(() => {
+      this.successMessage = "Product deleted successfully!";
+      this.errorMessage = null;
+      this.loadProducts();
+    },
+    error => {
+      this.errorMessage = "Failed to delete product. Please try again.";
+      this.successMessage = null;
+    });
+  }
+
+  toggleFormVisibility(): void {
+    this.isFormVisible = !this.isFormVisible;
   }  
 }
 

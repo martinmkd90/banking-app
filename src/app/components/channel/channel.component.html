@@ -1,41 +1,56 @@
 <div *ngIf="successMessage" class="alert alert-success" role="alert">
-    {{ successMessage }}
-  </div>
-  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-    {{ errorMessage }}
-  </div>
-  
-<table class="table table-striped table-hover">
+  {{ successMessage }}
+</div>
+<div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+  {{ errorMessage }}
+</div>
+
+<div class="channel-container">
+  <h2>Banking Channels</h2>
+
+  <!-- Display channels in a table -->
+  <table *ngIf="channels.length > 0; else noChannels">
     <thead>
       <tr>
-        <th>Channel Name</th>
+        <th>ID</th>
+        <th>Name</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let channel of channels">
+        <td>{{ channel.id }}</td>
         <td>{{ channel.name }}</td>
         <td>
-          <button class="btn btn-secondary btn-sm">Edit</button>
-          <button class="btn btn-danger btn-sm">Delete</button>
+          <button (click)="updateChannel()">Edit</button>
+          <button (click)="deleteChannel(channel.id)">Delete</button>
         </td>
       </tr>
     </tbody>
   </table>
-  <button class="btn btn-primary">Add Channel</button>
-  <form>
-    <div class="form-group">
-      <label for="channelName">Channel Name</label>
-      <input type="text" class="form-control" id="channelName" [(ngModel)]="channel.name" placeholder="Enter channel name">
-      <div *ngIf="channelForm?.get('name')?.touched && channelForm?.get('name')?.invalid" class="text-danger">
-        Channel name is required.
-      </div>
+
+  <!-- Display a message if no channels are available -->
+  <ng-template #noChannels>
+    <p>No channels available at the moment.</p>
+  </ng-template>
+
+  <button class="btn btn-primary" (click)="toggleFormVisibility()">Add Channel</button>
+  <div *ngIf="isFormVisible" class="channel-form-overlay">
+    <div class="channel-form-container">
+      <form [formGroup]="channelForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="name">Channel Name</label>
+          <input type="text" id="name" formControlName="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" formControlName="description"></textarea>
+        </div>
+                
+        <button type="submit">Submit</button>
+        <button (click)="toggleFormVisibility()" class="close-button">Close</button>
+      </form>
     </div>
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea class="form-control" id="description" rows="3"></textarea>
-    </div>
-    <button class="btn btn-primary">Submit</button>
-  </form>
-  
-  
+  </div>
+</div>

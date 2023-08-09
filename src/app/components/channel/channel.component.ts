@@ -15,42 +15,38 @@ export class ChannelComponent implements OnInit {
   errorMessage: string | null = null;
   channelForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
+    description: ['']
   });
+  isFormVisible: boolean = false;
 
-  constructor(private channelService: ChannelService, private fb: FormBuilder) {
-    this.channelForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-    });
-  }
+  constructor(private channelService: ChannelService, private fb: FormBuilder) { }
 
   ngOnInit(): void {
+    this.channelForm = this.fb.group({
+      name: ['', Validators.required]
+    });
     this.loadChannels();
   }
 
   onSubmit(): void {
-    if (this.channelForm.valid) {
-      const channelData = this.channelForm.value;
-      this.channelService.addChannel(channelData).subscribe({
-        next: data => {
-          this.successMessage = 'Channel added successfully!';
-        },
-        error: error => {
-          this.errorMessage = 'Failed to add channel. Please try again later.';
-        }
-      });
-    }
-  }
-
-  loadChannels(): void {
-    this.channelService.getAllChannels().subscribe({
-      next: data => {
-        this.channels = data;
-        this.successMessage = 'Channels loaded successfully!';
+    const channelData = this.channelForm.value;
+    this.channelService.addChannel(channelData).subscribe({
+      next: response => {
+        this.successMessage = "Channel added successfully!";
+        this.errorMessage = null;
+        this.loadChannels();
       },
       error: error => {
-        this.errorMessage = 'Failed to load channels. Please try again later.';
+        this.errorMessage = "Failed to add channel. Please try again.";
+        this.successMessage = null;
       }
-  });
+    });
+  }  
+
+  loadChannels(): void {
+    this.channelService.getAllChannels().subscribe(data => {
+      this.channels = data;
+    });
   }
 
   getChannelById(id: number): Channel {
@@ -64,15 +60,31 @@ export class ChannelComponent implements OnInit {
   }
 
   updateChannel(): void {
-    this.channelService.updateChannel(this.channel).subscribe(data => {
+    this.channelService.updateChannel(this.channel).subscribe(() => {
+      this.successMessage = "Channel updated successfully!";
+      this.errorMessage = null;
       this.loadChannels();
+    },
+    error => {
+      this.errorMessage = "Failed to update channel. Please try again.";
+      this.successMessage = null;
     });
-  }
+  }  
 
   deleteChannel(id: number): void {
     this.channelService.deleteChannel(id).subscribe(() => {
+      this.successMessage = "Channel deleted successfully!";
+      this.errorMessage = null;
       this.loadChannels();
+    },
+    error => {
+      this.errorMessage = "Failed to delete channel. Please try again.";
+      this.successMessage = null;
     });
+  }
+
+  toggleFormVisibility(): void {
+    this.isFormVisible = !this.isFormVisible;
   }  
 }
 
