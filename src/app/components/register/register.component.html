@@ -1,26 +1,41 @@
 <div class="register-container">
-    <h2>Register</h2>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" formControlName="username" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" formControlName="password" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" formControlName="email" required>
-      </div>
-      <button type="submit">Register</button>
-
-      <p>Already have an account? 
-        <a routerLink="/login">Login</a>
-      </p>
-    </form>
-    <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-    </div>
+  <h2>Register</h2>
+  <div *ngIf="successMessage" @fadeInOut class="alert alert-success mt-3">
+    {{ successMessage }}
   </div>
-  
+
+  <div *ngIf="errorMessage" @fadeInOut class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" formControlName="username" required>
+      <div class="alert-danger" *ngIf="registerForm.get('username')?.hasError('specialChars')">
+        Username should not contain special characters.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" formControlName="password" required>
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" formControlName="confirmPassword" required>      
+      <div class="alert-danger" *ngIf="!registerForm.get('confirmPassword')?.hasError('required') && registerForm.hasError('mismatch')" debounce="500">
+        Passwords do not match.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" formControlName="email" required>
+    </div>
+    <button type="submit">Register</button>
+
+    <p>Already have an account?
+      <a routerLink="/login">Login</a>
+    </p>
+  </form>
+</div>
