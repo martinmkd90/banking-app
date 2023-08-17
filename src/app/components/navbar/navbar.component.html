@@ -18,5 +18,7 @@
         <a class="nav-link" routerLink="/segments">Segments</a>
       </li>
     </ul>
+    <a routerLink="/profile">Profile</a>
+    <button *ngIf="authService.authStatus$ | async" (click)="logout()">Logout</button>
   </div>
 </nav>

@@ -43,23 +43,23 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     const loginData = this.loginForm.value;
     this.authService.login(loginData.username, loginData.password).subscribe({
-       next: response => {
-            this.isLoading = false;
-            this.successMessage = 'Login successful! Redirecting...';
-            setTimeout(() => {
-                this.successMessage = null;
-            }, 2500);
-            this.router.navigate(['/dashboard']);
-        },
-        error: error => {
-            this.isLoading = false;
-            if (error.error.error && error.error.error.code) {
-                this.errorMessage = error.error.error.message;
-            }
-            setTimeout(() => {
-                this.errorMessage = null;
-            }, 2500);
+      next: response => {
+        this.isLoading = false;
+        this.successMessage = 'Login successful! Redirecting...';
+        setTimeout(() => {
+          this.successMessage = null;
+        }, 2500);
+        this.router.navigate(['/dashboard']);
+      },
+      error: error => {
+        this.isLoading = false;
+        if (error.error.error && error.error.error.code) {
+          this.errorMessage = error.error.error.message;
         }
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 2500);
+      }
     });
   }  
 }

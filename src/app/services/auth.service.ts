@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { ConfigService } from '../config.service';
 import { User } from '../models/user.model';
+import { UserProfile } from '../models/user-profile.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService { 
+  
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
 
@@ -18,6 +20,12 @@ export class AuthService {
     this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser') || '{}'));
     this.currentUser = this.currentUserSubject.asObservable();
     this.apiUrl = `${configService.getApiUrl()}`;
+  }
+  private authStatus = new BehaviorSubject<boolean>(false);
+  authStatus$ = this.authStatus.asObservable();
+
+  updateAuthStatus(isAuthenticated: boolean): void {
+    this.authStatus.next(isAuthenticated);
   }
 
   public get currentUserValue(): User {
@@ -42,11 +50,31 @@ export class AuthService {
       }));
   }
 
-  logout(): void {
-    // remove user from local storage to log user out
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/authentication/logout`, {})
+      .pipe(
+        tap(() => {
+          localStorage.removeItem('currentUser');
+          this.currentUserSubject.next(null);
+          this.updateAuthStatus(false); // Update auth status on logout
+        })
+      );
   }
 
-  // Add other methods like register, password reset, etc. as needed
+  isAuthenticated(): Observable<boolean> {
+    return this.http.get<{ isAuthenticated: boolean }>(`${this.apiUrl}/isAuthenticated`).pipe(
+      map(response => response.isAuthenticated),
+      catchError(() => of(false))
+    );
+  }
+  
+  updateUserProfile(updatedProfile: any): Observable<any> {
+    const url = `${this.apiUrl}/profile/update`;
+    return this.http.put(url, updatedProfile);
+  }
+
+  getUserProfile(): Observable<UserProfile> {
+    const url = `${this.apiUrl}/profile`;
+    return this.http.get<UserProfile>(url);
+  }
 }
