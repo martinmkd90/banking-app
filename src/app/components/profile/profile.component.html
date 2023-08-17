@@ -1,0 +1,10 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="profilePicture">Profile Picture</label>
+        <input type="file" id="profilePicture" (change)="onFileSelected($event)" accept="image/*">
+        <img *ngIf="previewImage" [src]="previewImage" alt="Profile Picture Preview" class="profile-picture-preview">
+      </div>
+      
+    <button type="submit">Update Profile</button>
+  </form>
+  
