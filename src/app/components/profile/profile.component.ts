@@ -46,6 +46,19 @@ export class ProfileComponent implements OnInit {
     }
     );
   }
+  updateProfile(): void {
+    if (this.profileForm.valid) {
+      this.authService.updateUserProfile(this.profileForm.value).subscribe(
+        () => {
+          alert('Profile updated successfully');
+        },
+        error => {
+          alert('There was an error updating the profile');
+          console.error(error);
+        }
+      );
+    }
+  }
   onSubmit(): void {
   if (this.profileForm.invalid) {
     this.errorMessage = 'Please fill out the form correctly.';

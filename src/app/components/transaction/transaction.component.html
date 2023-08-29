@@ -1,0 +1,13 @@
+<h2>Your Transactions</h2>
+
+<div *ngFor="let transaction of transactions" class="transaction-card">
+    <div class="date">{{ transaction.transaction.date| date }}</div>
+    <div class="description">{{ transaction.transaction.description }}</div>
+    <div class="amount" [ngClass]="{'credit': transaction.transaction.amount > 0, 'debit': transaction.transaction.amount < 0}">
+        {{ transaction.transaction.amount | currency }}
+    </div>
+    <div class="type">{{ transaction.transaction.type }}</div>
+</div>
+<mat-paginator [length]="totalTransactions" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" (page)="pageChanged($event)">
+</mat-paginator>
+

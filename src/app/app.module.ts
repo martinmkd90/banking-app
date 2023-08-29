@@ -17,6 +17,9 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { JwtInterceptor } from './guards/jwt.interceptor';
 import { ProfileComponent } from './components/profile/profile.component';
+import { MaterialModule } from './material.module';
+import { TransactionComponent } from './components/transaction/transaction.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,7 +32,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     WelcomeComponent,
     LoginComponent,
     RegisterComponent,
-    ProfileComponent
+    ProfileComponent,
+    TransactionComponent
   ],
   imports: [
     HttpClientModule,
@@ -39,7 +43,9 @@ import { ProfileComponent } from './components/profile/profile.component';
     EffectsModule.forRoot([]),
     BrowserAnimationsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MaterialModule,
+    MatPaginatorModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }

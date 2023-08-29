@@ -6,6 +6,7 @@ import { ChannelComponent } from './components/channel/channel.component';
 import { SegmentComponent } from './components/segment/segment.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { RegisterComponent } from './components/register/register.component';
+import { TransactionComponent } from './components/transaction/transaction.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ProfileComponent } from './components/profile/profile.component';
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'products', component: ProductComponent },
   { path: 'channels', component: ChannelComponent },
   { path: 'segments', component: SegmentComponent },
+  { path: 'transactions', component: TransactionComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/welcome', pathMatch: 'full' },
   { path: '**', redirectTo: '/dashboard' }
 ];

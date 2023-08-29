@@ -7,10 +7,16 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
-  .profile-form {
-    margin-top: 20px;
+  .profile-card {
+    max-width: 600px;
+    margin: 2em auto;
+    padding: 1em;
   }
   
+  .profile-form-field {
+    width: 100%;
+    margin-bottom: 1em;
+  }
   .profile-form label {
     font-weight: bold;
   }
